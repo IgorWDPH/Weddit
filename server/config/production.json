@@ -1,0 +1,4 @@
+{
+    "port": "5000",
+    "mongoUri": "mongodb://192.168.5.128:27017/cluster"
+}
