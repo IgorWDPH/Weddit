@@ -1,4 +1,5 @@
 {
     "port": "5000",
-    "mongoUri": "mongodb://192.168.5.128:27017/cluster"
+    "mongoUri": "mongodb://192.168.5.128:27017/cluster",
+    "jwtSecret": "omega mike golf"
 }
