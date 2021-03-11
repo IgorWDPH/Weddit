@@ -1,0 +1,11 @@
+{
+    "port": "",
+    "mongoUri": "",
+    "jwtSecret": "",
+    "emails": {
+        "main": {
+            "address": "",
+            "password": ""
+        }
+    }
+}
