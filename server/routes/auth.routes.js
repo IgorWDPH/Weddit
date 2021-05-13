@@ -55,7 +55,7 @@ router.post(
                 return res.status(400).json({ errors: errors.array(), message: 'Invalid registration data' });
             }            
             const { nickname_register, email_register, password_register, password_register_repeat } = req.body;
-            const candidate = await User.findOne({ email_register });
+            const candidate = await User.findOne({ email: email_register });
             if(candidate) {
                 return res.status(400).json({ errors: errors.array(), message: 'Invalid registration data - user already exists!' });   
             }
@@ -76,7 +76,7 @@ router.post(
                 subject: 'Email Confirmation',
                 template: 'email_confirmation',
                 template_data: {
-                    confirmationUrl: config.get('frontendUrl') + 'confirm/' + confirmationToken,
+                    confirmationUrl: config.get('frontendUrl') + '/confirm/' + confirmationToken,
                     nickname: nickname_register
                 }
             });
@@ -141,7 +141,7 @@ router.post(
                     subject: 'Password Reset',
                     template: 'password_reset',
                     template_data: {
-                        passwordResetUrl: config.get('frontendUrl') + 'reset-password/' + passwordResetCode,
+                        passwordResetUrl: config.get('frontendUrl') + '/reset-password/' + passwordResetCode,
                         nickname: user.nickname
                     }
                 });
