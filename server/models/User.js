@@ -7,11 +7,11 @@ const { Schema, model, Types } = require('mongoose');
 const schema = new Schema({
     nickname: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },    
+    password: { type: String, required: true },
     status: { type: Number, enum: [0, 1, 2], required: true },
     confirmationCode: { type: String, required: true, unique: true },
-    passwordResetCode: { type: String, required: false, unique: true },
-    links: [{ type: Types.ObjectId, ref: 'Link' }]
+    passwordResetCode: { type: String, required: false, unique: false },
+    contacts: [{ type : Types.ObjectId, ref: 'User' }]
 });
 
 module.exports = model('User', schema);
