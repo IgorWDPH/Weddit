@@ -32,7 +32,7 @@ router.post(
             if(!isMatch) {
                 return res.status(400).json({ errors: errors.array(), message: 'Invalid login data - wrong password!' });
             }
-            const token = jwt.sign({ userId: user.id }, config.get('jwtSecret'), { expiresIn: '1h' });
+            const token = jwt.sign({ userId: user.id }, config.get('jwtSecret'), { expiresIn: '15m' });
             res.status(200).json({ token, userId: user.id });
         }
         catch(e) {
@@ -44,8 +44,8 @@ router.post(
 router.post(
     '/api/auth/register',
     [
-        check('nickname_register', 'Nickname is too short, it must be 6 symbols as min!').isLength({ min: 6 }),
-        check('email_register', 'Invalid email').isEmail(),
+        check('nickname_register', 'Nickname is too short, it must be 6 symbols as min!').isLength({ min: 6 , max: 32 }),
+        check('email_register', 'Invalid email').normalizeEmail().isEmail(),
         check('password_register', 'Password is too short, must be 8 symbols as min').isLength({ min: 8 })
     ],
     async (req, res) => {
@@ -55,9 +55,13 @@ router.post(
                 return res.status(400).json({ errors: errors.array(), message: 'Invalid registration data' });
             }            
             const { nickname_register, email_register, password_register, password_register_repeat } = req.body;
-            const candidate = await User.findOne({ email: email_register });
-            if(candidate) {
-                return res.status(400).json({ errors: errors.array(), message: 'Invalid registration data - user already exists!' });   
+            const candidateEmail = await User.findOne({ email: email_register });
+            const candidateNickname = await User.findOne({ nickname: nickname_register });
+            if(candidateEmail) {
+                return res.status(400).json({ errors: errors.array(), message: 'User with this email already exists!' });   
+            }
+            if(candidateNickname) {
+                return res.status(400).json({ errors: errors.array(), message: 'Nickname already taken!' });
             }
             if(password_register != password_register_repeat) {
                 return res.status(400).json({ errors: errors.array(), message: 'Invalid registration data - passwords not much!' });
@@ -122,7 +126,7 @@ router.post(
 router.post(
     '/api/auth/reset_password_send_link',
     [
-        check('email_reset_password', 'There was no email address provided!').isEmail(),
+        check('email_reset_password', 'There was no email address provided!').normalizeEmail().isEmail(),
     ],
     async (req, res) => {
         try {
